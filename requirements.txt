@@ -1,0 +1,13 @@
+# این فایل برای نصب پکیج‌های مورد نیاز برنامه استفاده می‌شود
+python-dotenv
+praw
+schedule
+nest_asyncio
+gtts
+python-telegram-bot
+SpeechRecognition
+googletrans==4.0.0-rc1  # نسخه خاصی از googletrans که با کد شما سازگار است
+requests
+openai
+openai-whisper
+SpeechRecognition
