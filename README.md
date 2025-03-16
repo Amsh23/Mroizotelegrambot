@@ -135,7 +135,5 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 ## 🙏 Acknowledgments
 
-- Thanks to the [python-telegram-bot](https://github.com/python-telegram-bot/python-telegram-bot) library for making Telegram bot development easier.
 - Special thanks to [DeepSeek](https://deepseek.com) for providing the AI-powered chat functionality.
 
----
