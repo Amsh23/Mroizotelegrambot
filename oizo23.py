@@ -2,23 +2,23 @@ import os
 import asyncio
 import logging
 import praw
+import schedule
 from dotenv import load_dotenv
 import nest_asyncio
 from gtts import gTTS
-from telegram import Update, BotCommand, InputFile
-from telegram.ext import Application, CommandHandler, ContextTypes
-import aiohttp
+from telegram import Update, BotCommand
+from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
 import speech_recognition as sr
 from googletrans import Translator, LANGUAGES
 from io import BytesIO
 import requests
+import aiohttp
 
 # Apply nest_asyncio to allow nested event loops
 nest_asyncio.apply()
 
 # Configure logging
-log_level = os.getenv("LOG_LEVEL", "INFO").upper()
-logging.basicConfig(level=getattr(logging, log_level, logging.INFO))
+logging.basicConfig(level=logging.INFO)
 
 # Load environment variables from .env file
 load_dotenv()
@@ -33,72 +33,42 @@ DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY")
 
 # Check if the Telegram token is set
 if not TOKEN:
-    raise ValueError("Telegram token is not set. Please check the .env file and ensure TELEGRAM_BOT_TOKEN is defined.")
-
-# Check if Reddit credentials are set
-if not all([REDDIT_CLIENT_ID, REDDIT_CLIENT_SECRET, REDDIT_USERNAME, REDDIT_PASSWORD]):
-    raise ValueError("Reddit credentials are not set. Please check the .env file and ensure all Reddit credentials are defined.")
+    raise ValueError("Telegram token is not set. Please check the .env file.")
 
 # Initialize Reddit instance
 reddit = praw.Reddit(client_id=REDDIT_CLIENT_ID,
                      client_secret=REDDIT_CLIENT_SECRET,
                      username=REDDIT_USERNAME,
                      password=REDDIT_PASSWORD,
-                     user_agent=os.getenv("REDDIT_USER_AGENT", "telegram_reddit_bot"))
+                     user_agent="telegram_reddit_bot")
 
 # Command handler for /start
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """
-    Handle the /start command. Sends a welcome message to the user.
-    Args:
-        update (Update): Incoming update from Telegram.
-    """
-    await update.message.reply_text("Hello! I'm your bot!")
+    await update.message.reply_text("Hello! This bot is ready to serve.")
 
 # Function to post content to Reddit
 def post_to_reddit(subreddit, title, content):
-    """
-    Post content to a specified subreddit.
-    Args:
-        subreddit (str): The subreddit to post to.
-        title (str): The title of the post.
-        content (str): The content of the post.
-    Returns:
-        str: The result of the post attempt.
-    """
     if not subreddit or not title or not content:
         return "Subreddit, title, and content must not be empty!"
     try:
         sub = reddit.subreddit(subreddit)
         submission = sub.submit(title, selftext=content)
         return f"Post successfully submitted: {submission.url}"
-    except praw.exceptions.APIException as e:
-        return f"Reddit API error: {e.message}"
-    except praw.exceptions.ClientException as e:
-        return f"Client error: {e.message}"
-    except praw.exceptions.PRAWException as e:
-        return f"PRAW error: {e.message}"
     except Exception as e:
-        return f"An unexpected error occurred: {str(e)}"
+        return f"Error submitting post: {str(e)}"
 
 # Command handler for /post
-async def post_reddit(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """
-    Handle the /post command. Posts content to Reddit.
-    Args:
-        update (Update): Incoming update from Telegram.
-        context (ContextTypes.DEFAULT_TYPE): Context for the command.
-    """
-    await update.message.reply_text("Posting to Reddit...")
+async def reddit_post_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    args = context.args
+    if len(args) < 3:
+        await update.message.reply_text("Incorrect format! Example: /post subreddit title content")
+        return
+    subreddit, title, content = args[0], args[1], " ".join(args[2:])
+    response = post_to_reddit(subreddit, title, content)
+    await update.message.reply_text(response)
 
 # Command handler for /voice
 async def voice_to_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """
-    Handle the /voice command. Converts voice message to text.
-    Args:
-        update (Update): Incoming update from Telegram.
-        context (ContextTypes.DEFAULT_TYPE): Context for the command.
-    """
     if not update.message.voice:
         await update.message.reply_text("Please send a voice message!")
         return
@@ -119,12 +89,6 @@ async def voice_to_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 # Command handler for /text_to_voice
 async def text_to_voice(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """
-    Handle the /text_to_voice command. Converts text to voice message.
-    Args:
-        update (Update): Incoming update from Telegram.
-        context (ContextTypes.DEFAULT_TYPE): Context for the command.
-    """
     args = context.args
     if len(args) < 2:
         await update.message.reply_text("Incorrect format! Example: /text_to_voice en text")
@@ -141,12 +105,6 @@ async def text_to_voice(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 # Command handler for /deepseek
 async def deepseek_response(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """
-    Handle the /deepseek command. Sends a question to DeepSeek API and returns the response.
-    Args:
-        update (Update): Incoming update from Telegram.
-        context (ContextTypes.DEFAULT_TYPE): Context for the command.
-    """
     user_input = " ".join(context.args)
     if not user_input:
         await update.message.reply_text("Please send a question!")
@@ -176,12 +134,6 @@ async def deepseek_response(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 # Command handler for /translate
 async def translate_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """
-    Handle the /translate command. Translates text from one language to another.
-    Args:
-        update (Update): Incoming update from Telegram.
-        context (ContextTypes.DEFAULT_TYPE): Context for the command.
-    """
     args = context.args
     if len(args) < 3:
         await update.message.reply_text("Incorrect format! Example: /translate fa en text")
@@ -197,23 +149,11 @@ async def translate_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 # Command handler for /languages
 async def show_languages(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """
-    Handle the /languages command. Shows available language codes.
-    Args:
-        update (Update): Incoming update from Telegram.
-        context (ContextTypes.DEFAULT_TYPE): Context for the command.
-    """
     language_codes = "\n".join([f"{code} - {name}" for code, name in LANGUAGES.items()])
     await update.message.reply_text(f"Language codes:\n{language_codes}")
 
 # Command handler for /commands
 async def command_panel(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """
-    Handle the /commands command. Shows available commands.
-    Args:
-        update (Update): Incoming update from Telegram.
-        context (ContextTypes.DEFAULT_TYPE): Context for the command.
-    """
     commands = [
         "/start - Start the bot.\nExample: /start",
         "/post - Post to Reddit.\nExample: /post subreddit title content",
@@ -228,18 +168,12 @@ async def command_panel(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 # Main function to start the bot
 async def main():
-    """
-    Main function to start the bot.
-    """
     # Create the application instance with the bot token
     application = Application.builder().token(TOKEN).build()
 
-    # Initialize the application
-    await application.initialize()
-
     # Add command handlers to the application
     application.add_handler(CommandHandler("start", start))
-    application.add_handler(CommandHandler("post", post_reddit))
+    application.add_handler(CommandHandler("post", reddit_post_command))
     application.add_handler(CommandHandler("voice", voice_to_text))
     application.add_handler(CommandHandler("deepseek", deepseek_response))
     application.add_handler(CommandHandler("text_to_voice", text_to_voice))
@@ -265,13 +199,15 @@ async def main():
     # Log that the bot is running
     logging.info("Bot is running...")
 
-    # Start the bot
-    try:
-        await application.run_polling()
-    except RuntimeError as e:
-        logging.error(f"RuntimeError: {e}")
+    # Start polling for updates
+    await application.run_polling()
 
-# Call the main function to start the bot
 if __name__ == "__main__":
-    nest_asyncio.apply()
-    asyncio.run(main())
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    try:
+        loop.run_until_complete(main())
+    except KeyboardInterrupt:
+        pass
+    finally:
+        loop.close()
