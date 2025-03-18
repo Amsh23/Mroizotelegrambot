@@ -7,9 +7,6 @@
 
 A multi-functional Telegram bot combining social media automation, AI interactions, and multilingual capabilities. Built with modern async Python and integrated with cutting-edge APIs.
 
-<div align="center">
-  <img src="bot-preview.png" alt="Bot Interface Preview" width="400">
-</div>
 
 ## 🌟 Featured Capabilities
 
@@ -51,15 +48,36 @@ source venv/bin/activate  # Windows: venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-### 🔐 Configuration
-Create `.env` file:
+## 🔐 Configuration
+
+Create `.env` file with these values (use dummy values for public repos):
+
 ```ini
-TELEGRAM_BOT_TOKEN=your_bot_token
-REDDIT_CLIENT_ID=your_reddit_id
-REDDIT_CLIENT_SECRET=your_reddit_secret
-DEEPSEEK_API_KEY=your_deepseek_key
-OPENROUTER_API_KEY=your_openrouter_key
-```
+# Telegram Configuration
+TELEGRAM_BOT_TOKEN=your_telegram_token_here
+
+# Reddit API Credentials
+REDDIT_CLIENT_ID=your_reddit_client_id
+REDDIT_CLIENT_SECRET=your_reddit_client_secret
+REDDIT_USERNAME=your_reddit_username
+REDDIT_PASSWORD=your_reddit_password
+REDDIT_USER_AGENT=script:your_app_name:v1.0 (by u/your_username)
+
+# AI API Keys
+DEEPSEEK_API_KEY=your_deepseek_api_key
+OPENROUTER_API_KEY=your_openrouter_api_key
+
+Security Notes:  
+🔒 Never commit real credentials to version control  
+🔑 Keep API keys private at all times  
+🚫 Add .env to your .gitignore file  
+
+---
+
+### Example .gitignore:
+.env
+
+---
 
 ## 🧠 AI Architecture
 ```mermaid
