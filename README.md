@@ -1,139 +1,160 @@
-.
-# Telegram Bot 🤖
 
-![Python](https://img.shields.io/badge/Python-3.8%2B-blue)
+```markdown
+# 🤖 Advanced Telegram Bot with Reddit & AI Integration
+
+![Python Version](https://img.shields.io/badge/python-3.10%2B-blue)
 ![Telegram](https://img.shields.io/badge/Telegram-Bot-green)
-![License](https://img.shields.io/badge/License-MIT-orange)
+![License](https://img.shields.io/badge/license-MIT-orange)
 
-This is a **Telegram Bot** designed to provide various functionalities such as posting to Reddit, converting voice to text, translating text, and interacting with AI models like DeepSeek. The bot is built using Python and leverages popular libraries like `python-telegram-bot`, `praw`, `gTTS`, and `googletrans`.
+A multi-functional Telegram bot combining social media automation, AI interactions, and multilingual capabilities. Built with modern async Python and integrated with cutting-edge APIs.
 
----
+<div align="center">
+  <img src="bot-preview.png" alt="Bot Interface Preview" width="400">
+</div>
 
-## ✨ Features
+## 🌟 Featured Capabilities
 
-The bot supports the following commands and functionalities:
+### 🤖 Core Features
+| Category        | Features                                                                 |
+|-----------------|--------------------------------------------------------------------------|
+| 🚀 Reddit       | Post creation, Smart commenting, Auto-comment system (20min intervals)  |
+| 🧠 AI Services  | Dual AI engine (DeepSeek & Mistral-7b), Context-aware responses         |
+| 🔊 Voice        | Multi-engine STT (Google/OpenRouter), Text-to-speech (gTTS)            |
+| 🌐 Translation  | 100+ languages, ISO 639-1 code support, Batch translation              |
+| ⚡ Automation   | Async operations, Rate limiting, Error recovery                        |
 
-### 1. **Post to Reddit**
-   - Post content to a specified subreddit.
-   - Command: `/post <subreddit> <title> <content>`
-   - Example: `/post test_bot "My First Post" "This is a test post from the bot."`
+### 🎯 Command Highlights
+```bash
+/post <subreddit> <title> <content>  # Create Reddit post
+/auto_comment <subreddit>            # Start smart auto-commenting
+/deepseek <question>                 # Query DeepSeek AI
+/chat <prompt>                       # Mistral-7b conversation
+/voice                               # Convert voice to text (Google)
+/voice_openrouter                    # AI-powered voice transcription
+/translate <src> <dest> <text>       # Real-time translation
+/text_to_voice <lang> <text>         # Generate audio from text
+```
 
-### 2. **Voice to Text**
-   - Convert voice messages to text using Google Speech Recognition.
-   - Command: `/voice`
-   - Example: Send a voice message, and the bot will reply with the transcribed text.
+## 🚀 Getting Started
 
-### 3. **Text to Voice**
-   - Convert text to voice messages using Google Text-to-Speech (gTTS).
-   - Command: `/text_to_voice <language_code> <text>`
-   - Example: `/text_to_voice en "Hello, how are you?"`
+### Prerequisites
+- Python 3.10+
+- Telegram bot token
+- Reddit API credentials
+- [DeepSeek](https://deepseek.com/) & [OpenRouter](https://openrouter.ai/) API keys
 
-### 4. **AI-Powered Chat (DeepSeek)**
-   - Interact with the DeepSeek AI model to get answers to questions.
-   - Command: `/deepseek <your_question>`
-   - Example: `/deepseek What is the capital of France?`
+### ⚙️ Installation
+```bash
+git clone https://github.com/yourusername/telegram-ai-bot.git
+cd telegram-ai-bot
+python -m venv venv
+source venv/bin/activate  # Windows: venv\Scripts\activate
+pip install -r requirements.txt
+```
 
-### 5. **Text Translation**
-   - Translate text between different languages using Google Translate.
-   - Command: `/translate <source_language_code> <target_language_code> <text>`
-   - Example: `/translate fa en "سلام"` (Translates "Hello" from Persian to English).
+### 🔐 Configuration
+Create `.env` file:
+```ini
+TELEGRAM_BOT_TOKEN=your_bot_token
+REDDIT_CLIENT_ID=your_reddit_id
+REDDIT_CLIENT_SECRET=your_reddit_secret
+DEEPSEEK_API_KEY=your_deepseek_key
+OPENROUTER_API_KEY=your_openrouter_key
+```
 
-### 6. **Show Language Codes**
-   - Display a list of supported language codes for translation and text-to-voice.
-   - Command: `/languages`
+## 🧠 AI Architecture
+```mermaid
+graph LR
+    A[User Input] --> B{Input Type}
+    B -->|Text| C[Natural Language Processing]
+    B -->|Voice| D[Speech Recognition]
+    C --> E{Command}
+    D --> E
+    E -->|/deepseek| F[DeepSeek AI]
+    E -->|/chat| G[Mistral-7b]
+    E -->|/post| H[Reddit API]
+    F & G & H --> I[Response Generation]
+```
 
-### 7. **Command Panel**
-   - Display all available commands and their usage.
-   - Command: `/commands`
+## 🔧 Technical Stack
+- **Core Framework**: Python AsyncIO
+- **APIs**: 
+  - Telegram Bot API
+  - Reddit API (PRAW)
+  - DeepSeek AI
+  - OpenRouter AI
+- **Key Libraries**:
+  - `aiohttp` - Async HTTP client
+  - `gTTS` - Google Text-to-Speech
+  - `speech_recognition` - Multi-engine STT
+  - `googletrans` - Real-time translation
 
----
+## 🌐 Translation Support
+Supports 100+ languages including:
+```python
+{
+    "en": "English",
+    "es": "Spanish",
+    "fa": "Persian",
+    "zh-CN": "Chinese",
+    "ar": "Arabic",
+    "ja": "Japanese"
+}
+```
+Use `/languages` to see full list
 
-## 🚀 Setup Instructions
+## 🛠️ Usage Examples
 
-### 1. **Clone the Repository**
-   ```bash
-   git clone https://github.com/your-username/telegram-bot.git
-   cd telegram-bot
-   ```
+### Reddit Automation
+```bash
+/post programming "AI Trends 2024" "Exploring latest developments..."
+/auto_comment technology
+```
 
-### 2. **Install Dependencies**
-   Install the required Python packages:
-   ```bash
-   pip install -r requirements.txt
-   ```
+### AI Interactions
+```bash
+/deepseek Explain quantum computing basics
+/chat Write Python code for Fibonacci sequence
+```
 
-### 3. **Configure Environment Variables**
-   Create a `.env` file in the project root and add the following variables:
-   ```plaintext
-   TELEGRAM_BOT_TOKEN=your_telegram_bot_token
-   REDDIT_CLIENT_ID=your_reddit_client_id
-   REDDIT_CLIENT_SECRET=your_reddit_client_secret
-   REDDIT_USERNAME=your_reddit_username
-   REDDIT_PASSWORD=your_reddit_password
-   DEEPSEEK_API_KEY=your_deepseek_api_key
-   ```
+### Voice & Translation
+```bash
+/text_to_voice en "Hello world! This is synthetic speech"
+/translate en fa "Artificial Intelligence"
+```
 
-   - **TELEGRAM_BOT_TOKEN**: Obtain this from [BotFather](https://core.telegram.org/bots#botfather).
-   - **DEEPSEEK_API_KEY**: Required if you want to use the AI-powered chat feature.
+## 🚧 Upcoming Features (Under Active Development)
+- **Enhanced AI Memory**: Context-aware conversation history
+- **Multi-platform Support**: Discord/WhatsApp integration
+- **Advanced Analytics**: User interaction tracking dashboard
+- **Image Generation**: DALL-E/Stable Diffusion integration
+- **Document Processing**: PDF/Word file analysis
+- **Voice Cloning**: Custom voice model support
+- **Marketplace**: Plugin system for 3rd-party extensions
 
-### 4. **Run the Bot**
-   Start the bot by running:
-   ```bash
-   python oizo23.py
-   ```
-
----
-
-## 🛠️ Usage
-
-Once the bot is running, you can interact with it in Telegram using the commands listed above. Here are some examples:
-
-1. **Post to Reddit**:
-   ```
-   /post test_bot "My First Post" "This is a test post from the bot."
-   ```
-
-2. **Convert Voice to Text**:
-   Send a voice message, and the bot will reply with the transcribed text.
-
-3. **Translate Text**:
-   ```
-   /translate fa en "سلام"
-   ```
-   Output: `🔄 Translation: Hello`
-
-4. **Ask DeepSeek AI**:
-   ```
-   /deepseek What is the capital of France?
-   ```
-
-5. **Show Commands**:
-   ```
-   /commands
-   ```
-
----
+## 🔒 Security Practices
+1. Environment variable encryption
+2. Rate limiting (20min API cooldowns)
+3. Input sanitization
+4. Async task isolation
+5. Comprehensive error logging
 
 ## 🤝 Contributing
+We welcome contributions! Please follow these steps:
+1. Fork the repository
+2. Create feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit changes (`git commit -m 'Add amazing feature'`)
+4. Push to branch (`git push origin feature/amazing-feature`)
+5. Open Pull Request
 
-We welcome contributions! If you'd like to contribute to this project, please follow these steps:
-
-1. Fork the repository.
-2. Create a new branch for your feature or bugfix.
-3. Make your changes and ensure tests pass.
-4. Submit a pull request with a detailed description of your changes.
-
-For more information, see our [Contributing Guidelines](CONTRIBUTING.md).
-
----
+See our [Contribution Guidelines](CONTRIBUTING.md) for details.
 
 ## 📜 License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+Distributed under MIT License. See [LICENSE](LICENSE) for details.
 
 ---
 
-## 🙏 Acknowledgments
-
-- Special thanks to [DeepSeek](https://deepseek.com) for providing the AI-powered chat functionality.
-
+**Important Notes**:
+- 🔄 Maintain Reddit API compliance ([Reddit API Rules](https://www.reddit.com/wiki/api))
+- 🤖 Follow Telegram bot policies ([Bot Guidelines](https://core.telegram.org/bots/policies))
+- ⚠️ Use AI features responsibly
