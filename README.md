@@ -1,30 +1,40 @@
 
-# 🤖 Advanced Telegram Bot with Reddit & AI Integration
+# 🤖 Enhanced Telegram Bot with AI & Media Processing
 
 ![Python Version](https://img.shields.io/badge/python-3.10%2B-blue)
 ![Telegram](https://img.shields.io/badge/Telegram-Bot-green)
 ![License](https://img.shields.io/badge/license-MIT-orange)
 
-A multi-functional Telegram bot combining social media automation, AI interactions, and multilingual capabilities. Built with modern async Python and integrated with cutting-edge APIs.
-
+A comprehensive multi-functional Telegram bot featuring Reddit automation, multiple AI engines, media processing with FFmpeg, and advanced translation capabilities. Built with modern async Python and integrated with cutting-edge APIs.
 
 ## 🌟 Featured Capabilities
 
 ### 🤖 Core Features
-| Category        | Features                                                                 |
-|-----------------|--------------------------------------------------------------------------|
-| 🚀 Reddit       | Post creation, Smart commenting, Auto-comment system (20min intervals)  |
-| 🧠 AI Services  | Dual AI engine (DeepSeek & Mistral-7b), Context-aware responses         |
-| 🔊 Voice        | Multi-engine STT (Google/OpenRouter), Text-to-speech (gTTS)            |
-| 🌐 Translation  | 100+ languages, ISO 639-1 code support, Batch translation              |
-| ⚡ Automation   | Async operations, Rate limiting, Error recovery                        |
+| Category        | Features                                                                      |
+|-----------------|-------------------------------------------------------------------------------|
+| 🚀 Reddit       | Post creation, Smart commenting, Auto-comment system (20min intervals)       |
+| 🧠 AI Services  | Triple AI engine (Llama 3.1:8b, DeepSeek & Mistral-7b), Context-aware       |
+| 🎵 Media        | FFmpeg integration, Video/Audio processing, Format conversion, Compression   |
+| 🔊 Voice        | Multi-engine STT (Google/OpenRouter), Text-to-speech (gTTS)                 |
+| 🌐 Translation  | 100+ languages, ISO 639-1 code support, Batch translation                   |
+| ⚡ Automation   | Async operations, Rate limiting, Error recovery                             |
 
-### 🎯 Command Highlights
+### 🎯 New AI & Media Commands
 ```bash
+# AI Features
+/llama <question>                    # Llama 3.1:8b AI chat (local)
+/deepseek <question>                 # DeepSeek AI cloud service
+/chat <prompt>                       # Mistral-7b conversation
+
+# Media Processing (reply to media file)
+/ffmpeg_info                         # Get detailed media information
+/convert_audio <format>              # Convert audio (mp3/wav/aac/ogg)
+/extract_audio                       # Extract audio from video
+/compress_video                      # Compress video files
+
+# Classic Features
 /post <subreddit> <title> <content>  # Create Reddit post
 /auto_comment <subreddit>            # Start smart auto-commenting
-/deepseek <question>                 # Query DeepSeek AI
-/chat <prompt>                       # Mistral-7b conversation
 /voice                               # Convert voice to text (Google)
 /voice_openrouter                    # AI-powered voice transcription
 /translate <src> <dest> <text>       # Real-time translation
@@ -36,16 +46,44 @@ A multi-functional Telegram bot combining social media automation, AI interactio
 ### Prerequisites
 - Python 3.10+
 - Telegram bot token
-- Reddit API credentials
-- [DeepSeek](https://deepseek.com/) & [OpenRouter](https://openrouter.ai/) API keys
+- FFmpeg (for media processing)
+- Llama 3.1:8b running locally (Ollama recommended)
+- Reddit API credentials (optional)
+- [DeepSeek](https://deepseek.com/) & [OpenRouter](https://openrouter.ai/) API keys (optional)
 
 ### ⚙️ Installation
 ```bash
-git clone https://github.com/yourusername/telegram-ai-bot.git
-cd telegram-ai-bot
+git clone https://github.com/Amsh23/Mroizotelegrambot.git
+cd Mroizotelegrambot
 python -m venv venv
 source venv/bin/activate  # Windows: venv\Scripts\activate
 pip install -r requirements.txt
+```
+
+### 🔧 FFmpeg Setup
+**Windows:**
+```bash
+# Download FFmpeg from https://ffmpeg.org/download.html
+# Add FFmpeg to your PATH environment variable
+```
+
+**macOS:**
+```bash
+brew install ffmpeg
+```
+
+**Linux:**
+```bash
+sudo apt update
+sudo apt install ffmpeg
+```
+
+### 🦙 Llama Setup (Local AI)
+Install Ollama and pull Llama 3.1:8b:
+```bash
+# Install Ollama from https://ollama.ai/
+ollama pull llama3.1:8b
+ollama serve  # Runs on http://127.0.0.1:11434 by default
 ```
 
 ## 🔐 Configuration

@@ -11,3 +11,5 @@ aiohttp
 urllib3
 tornado==6.2.0
 httpx==0.25.0
+argostranslate
+PyAudio
